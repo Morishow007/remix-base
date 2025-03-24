@@ -1,91 +1,50 @@
-import { LaptopIcon, MoonIcon, SunIcon } from "@radix-ui/react-icons";
+import {
+  MagnifyingGlassIcon,
+  ShoppingCartIcon,
+  UserIcon,
+} from "@heroicons/react/24/outline"; // Import icons
 import { Link } from "@remix-run/react";
-import * as React from "react";
-import { useHydrated } from "remix-utils/use-hydrated";
-
-import {
-	getTheme,
-	setTheme as setSystemTheme,
-} from "@/components/theme-switcher";
-import { Button } from "@/components/ui/button";
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuLabel,
-	DropdownMenuSeparator,
-	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 export function Header() {
-	const hydrated = useHydrated();
-	const [, rerender] = React.useState({});
-	const setTheme = React.useCallback((theme: string) => {
-		setSystemTheme(theme);
-		rerender({});
-	}, []);
-	const theme = getTheme();
+  const navLinks = [
+    { to: "/", label: "Home" },
+    { to: "/shop", label: "Shop" },
+    { to: "/about", label: "About" },
+    { to: "/contact", label: "Contact" },
+    { to: "/blog", label: "Blog" },
+  ];
 
-	return (
-		<header className="flex items-center justify-between px-4 py-2 md:py-4">
-			<div className="flex items-center space-x-4">
-				<Link className="flex items-center space-x-2" to="/">
-					{/* <HomeIcon className="h-6 w-6" /> */}
-					<span className="text-lg font-bold">shadcn</span>
-				</Link>
-			</div>
-			<DropdownMenu>
-				<DropdownMenuTrigger asChild>
-					<Button
-						className="w-10 h-10 rounded-full border"
-						size="icon"
-						variant="ghost"
-					>
-						<span className="sr-only">Theme selector</span>
-						{!hydrated ? null : theme === "dark" ? (
-							<MoonIcon />
-						) : theme === "light" ? (
-							<SunIcon />
-						) : (
-							<LaptopIcon />
-						)}
-					</Button>
-				</DropdownMenuTrigger>
-				<DropdownMenuContent className="mt-2">
-					<DropdownMenuLabel>Theme</DropdownMenuLabel>
-					<DropdownMenuSeparator />
-					<DropdownMenuItem asChild>
-						<button
-							type="button"
-							className="w-full"
-							onClick={() => setTheme("light")}
-							aria-selected={theme === "light"}
-						>
-							Light
-						</button>
-					</DropdownMenuItem>
-					<DropdownMenuItem asChild>
-						<button
-							type="button"
-							className="w-full"
-							onClick={() => setTheme("dark")}
-							aria-selected={theme === "dark"}
-						>
-							Dark
-						</button>
-					</DropdownMenuItem>
-					<DropdownMenuItem asChild>
-						<button
-							type="button"
-							className="w-full"
-							onClick={() => setTheme("system")}
-							aria-selected={theme === "system"}
-						>
-							System
-						</button>
-					</DropdownMenuItem>
-				</DropdownMenuContent>
-			</DropdownMenu>
-		</header>
-	);
+  return (
+    <header>
+      <div className="mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto px-4 flex items-center justify-between h-[64px]">
+          <h1 className="font-bebas text-[32px] sm:text-[40px] font-normal leading-[1] tracking-[0.06em]">
+            THE ONLINE STORE
+          </h1>
+          <nav className="hidden md:flex items-center space-x-4">
+            {navLinks.map((link) => (
+              <Link
+                key={link.to}
+                to={link.to}
+                className="font-inter font-normal text-[15px] leading-[20px] tracking-[0%] hover:underline"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+          <div className="flex items-center space-x-4">
+            <button className="p-2 rounded-full hover:bg-gray-100">
+              <MagnifyingGlassIcon className="h-6 w-6 text-gray-700" />
+            </button>
+            <button className="p-2 rounded-full hover:bg-gray-100">
+              <UserIcon className="h-6 w-6 text-gray-700" />
+            </button>
+            <button className="p-2 rounded-full hover:bg-gray-100">
+              <ShoppingCartIcon className="h-6 w-6 text-gray-700" />
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+  );
 }

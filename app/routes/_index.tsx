@@ -9,10 +9,10 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export default function Index() {
+export default function HomePage() {
   return (
     <main className="container prose py-8">
-      <h1>Welcome to Remix</h1>
+      <h1>Homepage</h1>
       <Link className="no-underline" to="/about">
         About
       </Link>
