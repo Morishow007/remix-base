@@ -1,6 +1,11 @@
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
 import type { MetaFunction } from "@remix-run/node";
-import { useLoaderData, useSearchParams } from "@remix-run/react";
+import {
+  useLoaderData,
+  useNavigation,
+  useSearchParams,
+} from "@remix-run/react";
+import { LoaderIcon } from "lucide-react";
 import { useState } from "react";
 import { CardProduct } from "../components/card-product";
 import Pagination from "../components/pagination";
@@ -61,6 +66,9 @@ export default function HomePage() {
   const [selectedCategories, setSelectedCategories] = useState<string[]>(
     searchParams.getAll("category")
   );
+  const transition = useNavigation();
+
+  const isLoading = transition.state === "loading";
 
   //TODO: TOGGLE CATEGORIES IN MOBILE
   //TODO: Implement loading and error states
@@ -145,16 +153,21 @@ export default function HomePage() {
               {total} products
             </div>
           </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {productsToDisplay.map((product) => (
-              <CardProduct
-                key={product.id}
-                product={product}
-                onAddToCart={() => handleAddToCart(product)}
-              />
-            ))}
-          </div>
+          {isLoading ? (
+            <div className="flex items-center justify-center h-40">
+              <LoaderIcon className="animate-spin" />
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+              {productsToDisplay.map((product) => (
+                <CardProduct
+                  key={product.id}
+                  product={product}
+                  onAddToCart={() => handleAddToCart(product)}
+                />
+              ))}
+            </div>
+          )}
 
           <Pagination
             currentPage={page}
