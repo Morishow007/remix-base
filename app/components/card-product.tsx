@@ -1,4 +1,5 @@
 import { ShoppingCartIcon } from "@heroicons/react/24/outline";
+import { Link } from "@remix-run/react";
 import { Product } from "../types/product";
 import { Button } from "./ui/button";
 import { Card } from "./ui/card";
@@ -24,11 +25,17 @@ export const CardProduct = ({ product, onAddToCart }: CardProductProps) => {
 
         <div className="flex-grow">
           <h3 className="font-semibold text-sm md:text-base line-clamp-2 h-[3.2rem]">
-            {product?.title ?? "Unknown Product"}
+            <Link
+              key={`link-${product.id}`}
+              to={`/product/${product?.id}`}
+              className="font-inter font-normal text-[15px] leading-[20px] tracking-[0%] hover:underline"
+            >
+              {product?.title ?? "Unknown Product"}
+            </Link>
           </h3>
           <p className="font-semibold text-sm md:text-base">
             {product?.price !== undefined
-              ? `$${product.price.toFixed(2)}`
+              ? `€${product.price.toFixed(2)}`
               : "Price not available"}{" "}
           </p>
         </div>

@@ -23,7 +23,7 @@ export const meta: MetaFunction = () => {
 };
 
 export const loader = async ({ request }: any) => {
-  const url = new URL(request.url); // Replace with your base URL
+  const url = new URL(request.url);
   const page = Number(url.searchParams.get("page")) || 1;
   const limit = 10;
   const skip = (page - 1) * limit;
@@ -38,7 +38,7 @@ export const loader = async ({ request }: any) => {
     productsByCategory = await getProductsByCategories(selectedCategories);
   }
 
-  const total = productData.total;
+  const total = productsByCategory.length || productData.total;
 
   return {
     products: productData.products,
@@ -62,6 +62,7 @@ export default function HomePage() {
     searchParams.getAll("category")
   );
 
+  //TODO: TOGGLE CATEGORIES IN MOBILE
   //TODO: Implement loading and error states
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -69,7 +70,7 @@ export default function HomePage() {
   const totalPages = Math.ceil(total / 10);
 
   const productsToDisplay = selectedCategories.length
-    ? productsByCategory
+    ? productsByCategory.slice((page - 1) * 10, page * 10)
     : products;
 
   const filteredCategories = categories.filter((category) =>
@@ -83,8 +84,21 @@ export default function HomePage() {
 
   const toggleCategory = (category: string) => {
     const newSearchParams = new URLSearchParams(searchParams);
-    newSearchParams.set("category", category);
+
+    if (selectedCategories.includes(category)) {
+      const updatedCategories = selectedCategories.filter(
+        (item) => item !== category
+      );
+      newSearchParams.delete("category");
+      updatedCategories.forEach((item) =>
+        newSearchParams.append("category", item)
+      );
+    } else {
+      newSearchParams.append("category", category);
+    }
+
     setSearchParams(newSearchParams);
+
     setSelectedCategories((prev) =>
       prev.includes(category)
         ? prev.filter((c) => c !== category)
@@ -215,7 +229,7 @@ export default function HomePage() {
             {filteredCategories.length > initialDisplayCount && (
               <Button
                 onClick={() => setShowAllCategories(!showAllCategories)}
-                className="mt-3 text-sm text-primary hover:underline flex items-center justify-center w-full"
+                className="bg-gray-100 mt-3 text-sm text-primary hover:underline flex items-center justify-center w-full"
               >
                 {showAllCategories ? (
                   <>
