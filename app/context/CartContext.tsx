@@ -19,7 +19,6 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cart, setCart] = useState<CartProduct[]>([]);
 
   const addToCart = (product: Product) => {
-    console.log("Adding to cart:", product);
     const newCart = cart.map((item) =>
       item.product.id === product.id
         ? { ...item, quantity: item.quantity + 1 }

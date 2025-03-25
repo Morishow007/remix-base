@@ -41,7 +41,7 @@ export function Header() {
 
   return (
     <header>
-      <div className="mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto px-4">
         <div className="mx-auto flex items-center justify-between h-[64px] py-4">
           <h1 className="font-bebas text-[24px] md:text-[28px] lg:text-[32px] font-normal leading-none tracking-[0.06em]">
             THE ONLINE STORE

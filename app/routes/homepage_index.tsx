@@ -1,39 +1,76 @@
-import {
-  ChevronDownIcon,
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  ChevronUpIcon,
-} from "@heroicons/react/24/outline";
+import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
 import type { MetaFunction } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { useLoaderData, useSearchParams } from "@remix-run/react";
 import { useState } from "react";
 import { CardProduct } from "../components/card-product";
+import Pagination from "../components/pagination";
+import { Button } from "../components/ui/button";
 import { Checkbox } from "../components/ui/checkbox";
 import { Input } from "../components/ui/input";
 import { useCart } from "../context/CartContext";
-import { getAllCategories, getProducts } from "../models/products.server";
+import {
+  getAllCategories,
+  getProducts,
+  getProductsByCategories,
+} from "../models/products.server";
 import { Product } from "../types/product";
 
 export const meta: MetaFunction = () => {
   return [
     { title: "The Online Store" },
-    { name: "description", content: "Welcome to Remix!" },
+    { name: "description", content: "Welcome to the Online Store" },
   ];
 };
 
-export const loader = async () => {
-  const products = await getProducts();
+export const loader = async ({ request }: any) => {
+  const url = new URL(request.url); // Replace with your base URL
+  const page = Number(url.searchParams.get("page")) || 1;
+  const limit = 10;
+  const skip = (page - 1) * limit;
+
+  const productData = await getProducts(limit, skip);
   const categories = await getAllCategories();
-  return { products, categories };
+
+  const selectedCategories = url.searchParams.getAll("category");
+  let productsByCategory: Product[] = [];
+
+  if (selectedCategories.length > 0) {
+    productsByCategory = await getProductsByCategories(selectedCategories);
+  }
+
+  const total = productData.total;
+
+  return {
+    products: productData.products,
+    categories,
+    productsByCategory,
+    page,
+    total,
+  };
 };
 
 export default function HomePage() {
-  const { products, categories } = useLoaderData<typeof loader>();
-  const { addToCart, cart } = useCart();
+  const { products, categories, productsByCategory, page, total } =
+    useLoaderData<typeof loader>();
+
+  const { addToCart } = useCart();
 
   const [categoryFilter, setCategoryFilter] = useState("");
   const [showAllCategories, setShowAllCategories] = useState(false);
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [selectedCategories, setSelectedCategories] = useState<string[]>(
+    searchParams.getAll("category")
+  );
+
+  //TODO: Implement loading and error states
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const totalPages = Math.ceil(total / 10);
+
+  const productsToDisplay = selectedCategories.length
+    ? productsByCategory
+    : products;
 
   const filteredCategories = categories.filter((category) =>
     category.toLowerCase().includes(categoryFilter.toLowerCase())
@@ -45,6 +82,9 @@ export default function HomePage() {
     : filteredCategories.slice(0, initialDisplayCount);
 
   const toggleCategory = (category: string) => {
+    const newSearchParams = new URLSearchParams(searchParams);
+    newSearchParams.set("category", category);
+    setSearchParams(newSearchParams);
     setSelectedCategories((prev) =>
       prev.includes(category)
         ? prev.filter((c) => c !== category)
@@ -60,7 +100,14 @@ export default function HomePage() {
   };
 
   const handleAddToCart = (currentProduct: Product) => {
+    alert("Added to cart!");
     addToCart(currentProduct);
+  };
+
+  const handlePageChange = (newPage: number) => {
+    const newSearchParams = new URLSearchParams(searchParams);
+    newSearchParams.set("page", newPage.toString());
+    setSearchParams(newSearchParams);
   };
 
   return (
@@ -79,12 +126,14 @@ export default function HomePage() {
               <ChevronDownIcon className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 pointer-events-none" />
             </div>
             <div className="text-sm text-muted-foreground">
-              Showing 1-9 of 100
+              Showing {productsToDisplay.length > 0 ? (page - 1) * 10 + 1 : 0}-
+              {productsToDisplay.length > 0 ? Math.min(page * 10, total) : 0} of{" "}
+              {total} products
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {products.map((product) => (
+            {productsToDisplay.map((product) => (
               <CardProduct
                 key={product.id}
                 product={product}
@@ -92,33 +141,19 @@ export default function HomePage() {
               />
             ))}
           </div>
-          <div className="flex justify-center items-center mt-8 space-x-1">
-            <button className="w-10 h-10 flex items-center justify-center rounded-md border hover:bg-muted">
-              <ChevronLeftIcon className="h-4 w-4" />
-            </button>
-            <button className="w-10 h-10 flex items-center justify-center rounded-md border bg-primary text-primary-foreground">
-              1
-            </button>
-            <button className="w-10 h-10 flex items-center justify-center rounded-md border hover:bg-muted">
-              2
-            </button>
-            <button className="w-10 h-10 flex items-center justify-center rounded-md border hover:bg-muted">
-              3
-            </button>
-            <button className="w-10 h-10 flex items-center justify-center rounded-md border hover:bg-muted">
-              4
-            </button>
-            <button className="w-10 h-10 flex items-center justify-center rounded-md border hover:bg-muted">
-              <ChevronRightIcon className="h-4 w-4" />
-            </button>
-          </div>
+
+          <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
         </div>
 
         <div className="w-full md:w-64 md:ml-8 mb-6 md:mb-0 order-first md:order-last">
           <div className="border rounded-md p-4">
             <div className="flex justify-between items-center mb-4">
               <h2 className="font-medium">Categories</h2>
-              <button className="md:hidden text-sm text-primary">Toggle</button>
+              <Button className="md:hidden text-sm text-primary">Toggle</Button>
             </div>
 
             <div className="mb-4">
@@ -178,7 +213,7 @@ export default function HomePage() {
             </div>
 
             {filteredCategories.length > initialDisplayCount && (
-              <button
+              <Button
                 onClick={() => setShowAllCategories(!showAllCategories)}
                 className="mt-3 text-sm text-primary hover:underline flex items-center justify-center w-full"
               >
@@ -193,7 +228,7 @@ export default function HomePage() {
                     <ChevronDownIcon className="h-4 w-4 ml-1" />
                   </>
                 )}
-              </button>
+              </Button>
             )}
           </div>
         </div>

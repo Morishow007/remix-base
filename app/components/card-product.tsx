@@ -1,3 +1,4 @@
+import { ShoppingCartIcon } from "@heroicons/react/24/outline";
 import { Product } from "../types/product";
 import { Button } from "./ui/button";
 import { Card } from "./ui/card";
@@ -10,18 +11,19 @@ interface CardProductProps {
 export const CardProduct = ({ product, onAddToCart }: CardProductProps) => {
   return (
     <Card key={product.id} className="w-full max-w-xs rounded-xl border width">
-      <div className="grid gap-4 p-4">
+      <div className="flex flex-col h-full gap-4 p-4">
         <div className="aspect-[4/5] w-full overflow-hidden rounded-xl">
           <img
             src={product?.images?.[0] ?? "https://dummyimage.com/336x336"}
             alt={product?.title ?? "Product image"}
             width="336"
             height="336"
-            className="aspect-[4/5] object-cover border w-full"
+            className="aspect-[4/5] object-scale-down border w-full"
           />
         </div>
-        <div className="grid gap-1.5">
-          <h3 className="font-semibold text-sm md:text-base line-clamp-2">
+
+        <div className="flex-grow">
+          <h3 className="font-semibold text-sm md:text-base line-clamp-2 h-[3.2rem]">
             {product?.title ?? "Unknown Product"}
           </h3>
           <p className="font-semibold text-sm md:text-base">
@@ -30,8 +32,17 @@ export const CardProduct = ({ product, onAddToCart }: CardProductProps) => {
               : "Price not available"}{" "}
           </p>
         </div>
-        <Button size="sm" onClick={onAddToCart}>
+
+        {/* TODO: Additional feature - Add to wishlist */}
+
+        <Button
+          size="sm"
+          variant={"default"}
+          onClick={onAddToCart}
+          className="mt-auto bg-[#1f3044] text-white hover:bg-gray-500 active:bg-black"
+        >
           Add to cart
+          <ShoppingCartIcon className="h-5 w-5 ml-2" />
         </Button>
       </div>
     </Card>
