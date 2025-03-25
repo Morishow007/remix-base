@@ -15,6 +15,7 @@ import {
   ThemeSwitcherScript,
 } from "@/components/theme-switcher";
 
+import { CartProvider } from "./context/CartContext";
 import "./globals.css";
 
 function App({ children }: { children: React.ReactNode }) {
@@ -52,9 +53,11 @@ function App({ children }: { children: React.ReactNode }) {
 
 export default function Root() {
   return (
-    <App>
-      <Outlet />
-    </App>
+    <CartProvider>
+      <App>
+        <Outlet />
+      </App>
+    </CartProvider>
   );
 }
 
