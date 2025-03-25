@@ -11,7 +11,7 @@ import {
   MagnifyingGlassIcon,
   ShoppingCartIcon,
   UserIcon,
-} from "@heroicons/react/24/outline"; // Import icons
+} from "@heroicons/react/24/outline";
 import { Link } from "@remix-run/react";
 import { useEffect, useState } from "react";
 
