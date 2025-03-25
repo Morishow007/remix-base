@@ -1,6 +1,7 @@
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
 import type { MetaFunction } from "@remix-run/node";
 import {
+  redirect,
   useLoaderData,
   useNavigation,
   useSearchParams,
@@ -45,6 +46,12 @@ export const loader = async ({ request }: any) => {
 
   const total = productsByCategory.length || productData.total;
 
+  const maxPages = Math.ceil(total / limit);
+  if (page > maxPages) {
+    url.searchParams.set("page", "1");
+    return redirect(url.toString());
+  }
+
   return {
     products: productData.products,
     categories,
@@ -66,13 +73,12 @@ export default function HomePage() {
   const [selectedCategories, setSelectedCategories] = useState<string[]>(
     searchParams.getAll("category")
   );
-  const transition = useNavigation();
 
+  const transition = useNavigation();
   const isLoading = transition.state === "loading";
 
   //TODO: TOGGLE CATEGORIES IN MOBILE
-  //TODO: Implement loading and error states
-  const [loading, setLoading] = useState(true);
+  //TODO: Implement  error states
   const [error, setError] = useState<string | null>(null);
 
   const totalPages = Math.ceil(total / 10);
@@ -104,6 +110,8 @@ export default function HomePage() {
     } else {
       newSearchParams.append("category", category);
     }
+
+    newSearchParams.set("page", "1");
 
     setSearchParams(newSearchParams);
 
@@ -169,11 +177,13 @@ export default function HomePage() {
             </div>
           )}
 
-          <Pagination
-            currentPage={page}
-            totalPages={totalPages}
-            onPageChange={handlePageChange}
-          />
+          {!isLoading && (
+            <Pagination
+              currentPage={page}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
+          )}
         </div>
 
         <div className="w-full md:w-64 md:ml-8 mb-6 md:mb-0 order-first md:order-last">

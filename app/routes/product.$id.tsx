@@ -11,6 +11,8 @@ export default function ProductDetail() {
   const { product } = useLoaderData<typeof loader>();
   const { addToCart } = useCart();
 
+  console.log(product);
+
   return (
     <div className="min-h-screen flex flex-col">
       {/* Main Content */}

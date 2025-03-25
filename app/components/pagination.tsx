@@ -163,7 +163,6 @@ export default function Pagination({
       );
     }
 
-    // Next page button
     buttons.push(
       <Button
         key="next"
