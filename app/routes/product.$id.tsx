@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useLoaderData } from "@remix-run/react";
+import { StarRating } from "../components/star-rating";
 import { useCart } from "../context/CartContext";
 import { getProductById } from "../models/products.server";
 
@@ -31,7 +32,17 @@ export default function ProductDetail() {
 
           {/* Product Details */}
           <div className="flex flex-col">
-            <h1 className="text-2xl font-medium mb-2">{product?.title}</h1>
+            <div className="flex flex-row gap-2 justify-start">
+              <h1 className="text-2xl font-medium ">{product?.title}</h1>
+              {product?.rating !== undefined && (
+                <div className="flex items-center gap-2">
+                  <StarRating rating={product.rating} />
+                  <span className="text-sm text-gray-600">
+                    ({product.rating})
+                  </span>
+                </div>
+              )}
+            </div>
             <p className="text-2xl font-bold mb-6">€{product?.price}</p>
 
             <Button className="w-full bg-slate-800 hover:bg-slate-700 text-white mb-8">
