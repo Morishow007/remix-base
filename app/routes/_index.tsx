@@ -28,6 +28,13 @@ export const meta: MetaFunction = () => {
   ];
 };
 
+const sortOptions = [
+  { value: "asc", label: "Price Low to High" },
+  { value: "desc", label: "Price High to Low" },
+  { value: "rating", label: "Rating" },
+  { value: "title", label: "Title" },
+];
+
 export const loader = async ({ request }: any) => {
   const url = new URL(request.url);
   const page = Number(url.searchParams.get("page")) || 1;

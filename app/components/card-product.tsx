@@ -41,7 +41,7 @@ export const CardProduct = ({ product, onAddToCart }: CardProductProps) => {
           </h3>
           <p className="font-semibold text-sm md:text-base">
             {product?.price !== undefined
-              ? `€${product.price.toFixed(2)}`
+              ? `${product.price.toFixed(2)} €`
               : "Price not available"}{" "}
           </p>
         </div>

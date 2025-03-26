@@ -1,11 +1,15 @@
 import { Product, ProductResponse } from "../types/product";
 
+//asc || desc
+
 export async function getProducts(
   limit = 10,
-  skip = 0
+  skip = 0,
+  sortBy = "rating",
+  order = "desc"
 ): Promise<ProductResponse> {
   const data = await fetch(
-    `https://dummyjson.com/products?limit=${limit}&skip=${skip}`,
+    `https://dummyjson.com/products?limit=${limit}&skip=${skip}&sortBy=${sortBy}&order=${order}`,
     {
       headers: {
         "Cache-Control": "max-age=900, public",

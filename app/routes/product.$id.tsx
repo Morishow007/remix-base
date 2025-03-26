@@ -41,7 +41,7 @@ export default function ProductDetail() {
                 </div>
               )}
             </div>
-            <p className="text-2xl font-bold mb-6">€{product?.price}</p>
+            <p className="text-2xl font-bold mb-6">{product?.price} €</p>
 
             <Button className="w-full bg-slate-800 hover:bg-slate-700 text-white mb-8">
               Add to Cart
