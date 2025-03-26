@@ -1,9 +1,13 @@
-## Development
-
-Run the Vite dev server:
+## Configuration
 
 ```sh
-npm run dev
+pnpm install
+```
+
+## Development
+
+```sh
+pnpm run dev
 ```
 
 # Project Considerations

@@ -29,10 +29,9 @@ export const meta: MetaFunction = () => {
 };
 
 const sortOptions = [
-  { value: "price", label: "Price Low to High" },
-  { value: "id", label: "Price High to Low" },
+  { value: "price&order=asc", label: "Price Low to High" },
+  { value: "price&order=desc", label: "Price High to Low" },
   { value: "rating", label: "Best Rated" },
-  { value: "title", label: "Name" },
 ];
 
 export const loader = async ({ request }: any) => {
@@ -41,9 +40,8 @@ export const loader = async ({ request }: any) => {
   const limit = 10;
   const skip = (page - 1) * limit;
   const sortBy = url.searchParams.get("sortBy") || "id";
-  const order = url.searchParams.get("order") || "asc";
 
-  const productData = await getProducts(limit, skip, sortBy, order);
+  const productData = await getProducts(limit, skip, sortBy);
   const categories = await getAllCategories();
 
   const selectedCategories = url.searchParams.getAll("category");
