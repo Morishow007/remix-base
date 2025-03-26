@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link } from "@remix-run/react";
 import { useState } from "react";
-import { CartProductCart } from "../components/cart-product-cart";
+import { CartProductCard } from "../components/cart-product-card";
 import { useCart } from "../context/CartContext";
 import { useToast } from "../hooks/use-toast";
 
@@ -81,7 +81,7 @@ export default function Cart() {
           ) : (
             <div className="space-y-6">
               {cart.map((item) => (
-                <CartProductCart key={item.product.id} product={item} />
+                <CartProductCard key={item.product.id} product={item} />
               ))}
             </div>
           )}

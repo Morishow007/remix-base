@@ -7,7 +7,7 @@ interface CartProductCartProps {
   product: CartProduct;
 }
 
-export const CartProductCart = ({ product }: CartProductCartProps) => {
+export const CartProductCard = ({ product }: CartProductCartProps) => {
   const { updateQuantity, removeFromCart } = useCart();
   return (
     <>
@@ -74,7 +74,7 @@ export const CartProductCart = ({ product }: CartProductCartProps) => {
                     className="text-xs flex items-center gap-1"
                   >
                     <Tag className="h-3 w-3" />
-                    SKU: {product.product.sku}
+                    CODE: {product.product.sku}
                   </Badge>
                 )}
                 {product.product.availabilityStatus && (
