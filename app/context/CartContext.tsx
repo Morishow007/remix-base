@@ -11,6 +11,7 @@ import { Product } from "../types/product";
 interface CartProduct {
   product: Product;
   quantity: number;
+  activePromoCode: boolean;
 }
 
 interface CartContextType {
@@ -18,7 +19,8 @@ interface CartContextType {
   addToCart: (product: Product) => void;
   removeFromCart: (productId: number) => void;
   checkCart: () => void;
-  updateQuantity: (productId: any, quantity: number) => void;
+  updateQuantity: (productId: number, quantity: number) => void;
+  activatePromoCode: (productId: number) => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -26,7 +28,7 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const hydrated = useHydrated();
   const [cart, setCart] = useState<CartProduct[]>([]);
-  const addToCart = (product: any) => {
+  const addToCart = (product: Product) => {
     setCart((prevCart) => {
       const existingItem = prevCart.find(
         (item) => item.product.id === product.id
@@ -38,21 +40,31 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
             : item
         );
       } else {
-        return [...prevCart, { product, quantity: 1 }];
+        return [...prevCart, { product, quantity: 1, activePromoCode: false }];
       }
     });
   };
 
-  const removeFromCart = (productId: any) => {
+  const removeFromCart = (productId: number) => {
     setCart((prevCart) =>
       prevCart.filter((item) => item.product.id !== productId)
     );
   };
 
-  const updateQuantity = (productId: any, quantity: number) => {
+  const updateQuantity = (productId: number, quantity: number) => {
     setCart((prevCart) =>
       prevCart.map((item) =>
         item.product.id === productId ? { ...item, quantity } : item
+      )
+    );
+  };
+
+  const activatePromoCode = (productId: number) => {
+    setCart((prevCart) =>
+      prevCart.map((item) =>
+        item.product.id === productId
+          ? { ...item, activePromoCode: true }
+          : item
       )
     );
   };
@@ -76,7 +88,14 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <CartContext.Provider
-      value={{ cart, addToCart, removeFromCart, checkCart, updateQuantity }}
+      value={{
+        cart,
+        addToCart,
+        removeFromCart,
+        checkCart,
+        updateQuantity,
+        activatePromoCode,
+      }}
     >
       {children}
     </CartContext.Provider>

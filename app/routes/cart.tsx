@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link } from "@remix-run/react";
 import { PercentIcon, ShieldCheck, Tag, Trash2, TruckIcon } from "lucide-react";
+import { useState } from "react";
 import { useCart } from "../context/CartContext";
 
 export const loader = async () => {
@@ -12,14 +13,15 @@ export const loader = async () => {
 };
 
 export default function Cart() {
-  const { cart, updateQuantity, removeFromCart } = useCart();
+  const { cart, updateQuantity, removeFromCart, activatePromoCode, checkCart } =
+    useCart();
 
-  // Calculate subtotal
+  const [promoCode, setPromoCode] = useState("");
+
   const subtotal = cart.reduce((acc, item) => {
     return acc + item.product.price * item.quantity;
   }, 0);
 
-  // Calculate discounts
   const discounts = cart.reduce((acc, item) => {
     const discountAmount = item.product.discountPercentage
       ? ((item.product.price * item.product.discountPercentage) / 100) *
@@ -28,11 +30,18 @@ export default function Cart() {
     return acc + discountAmount;
   }, 0);
 
-  // Fixed shipping cost
   const shipping = 20.0;
-
-  // Calculate total
   const total = subtotal - discounts + shipping;
+
+  const handleApplyPromoCode = (sku: string) => {
+    const productId = cart.find((item) => item.product.sku === sku)?.product.id;
+    if (productId) {
+      activatePromoCode(productId);
+      alert("Promo code applied!");
+    } else {
+      alert("Invalid promo code!");
+    }
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -105,7 +114,7 @@ export default function Cart() {
                               {item.product.brand}
                             </Badge>
                           )}
-                          {item.product.sku && (
+                          {item.activePromoCode && (
                             <Badge
                               variant="outline"
                               className="text-xs flex items-center gap-1"
@@ -223,7 +232,10 @@ export default function Cart() {
               </div>
             </div>
 
-            <Button className="w-full bg-slate-800 hover:bg-slate-700 mb-4 text-white">
+            <Button
+              className="w-full bg-slate-800 hover:bg-slate-700 mb-4 text-white"
+              onClick={() => checkCart()}
+            >
               Check out
             </Button>
 
@@ -238,10 +250,12 @@ export default function Cart() {
                   type="text"
                   placeholder="Enter code"
                   className="flex-1"
+                  onChange={(e) => setPromoCode(e.target.value.toString())}
                 />
                 <Button
                   variant="outline"
                   className="bg-slate-800 text-white hover:bg-slate-700"
+                  onClick={() => handleApplyPromoCode(promoCode)}
                 >
                   Apply
                 </Button>
