@@ -1,41 +1,3 @@
-# Welcome to Remix + Vite + shadcn/ui!
-
-📖 See the [Remix docs](https://remix.run/docs) and the [Remix Vite docs](https://remix.run/docs/en/main/future/vite) for details on supported features.
-
-## Getting Started
-
-Node Server:
-
-```sh
-npx create-remix@latest --template jacob-ebey/remix-shadcn
-```
-
-Cloudflare Pages:
-
-```shellscript
-npx create-remix@latest --template https://github.com/jacob-ebey/remix-shadcn/tree/cloudflare
-```
-
-Or for a more flushed out template with a login flow and a SQLite database backed by Drizzle ORM:
-
-Node Server:
-
-```shellscript
-npx create-remix@latest --template https://github.com/jacob-ebey/remix-shadcn/tree/drizzle
-```
-
-Cloudflare Pages:
-
-```shellscript
-npx create-remix@latest --template https://github.com/jacob-ebey/remix-shadcn/tree/drizzle-cloudflare
-```
-
-## Built in theme switcher
-
-![image](https://github.com/jacob-ebey/remix-shadcn/assets/12063586/c6ed812c-764f-46b7-af30-26284f55535c)
-
-![image](https://github.com/jacob-ebey/remix-shadcn/assets/12063586/4e378230-3b4b-4b78-8af4-096b30aacf79)
-
 ## Development
 
 Run the Vite dev server:
@@ -44,36 +6,26 @@ Run the Vite dev server:
 npm run dev
 ```
 
-## Deployment
+# Project Considerations
 
-First, build your app for production:
+## Product Card Component
 
-```sh
-npm run build
-```
+Instead of creating a single Product Card component with an extended version, the implementation was split into separate components. This decision was made to maintain separation of concerns, making future feature implementation more manageable.
 
-Setup your environment:
+## API Handling
 
-```sh
-NODE_ENV='production'
-```
+The API endpoints for fetching categories and retrieving all products are fundamentally different:
 
-Then run the app in production mode:
+The category API does not include pagination, as pagination is handled on the frontend.
 
-```sh
-npm start
-```
+The getAll products API requires a different approach due to its structure and pagination logic.
 
-Now you'll need to pick a host to deploy it to.
+Handling both required managing two distinct situations rather than applying a single filtering approach, which would have been an incorrect yet simpler solution.
 
-### DIY
+## Caching Strategy
 
-If you're familiar with deploying Node applications, the built-in Remix app server is production-ready.
+Caching was implemented to optimize performance and reduce redundant API calls. By storing frequently accessed data, the system minimizes unnecessary requests, leading to faster response times and a better user experience.
 
-Make sure to deploy the output of `npm run build` and the server
+## Filtering Approach
 
-- `server.js`
-- `build/server`
-- `build/client`
-
-Take a look at the provided Dockerfile for further details on how to configure a production environment.
+A naïve approach would have been to manipulate the entire product list by applying filters on the frontend. However, the implemented solution ensures better performance and scalability by addressing filtering at the appropriate level within the API design.

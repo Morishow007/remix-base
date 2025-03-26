@@ -14,13 +14,19 @@ export const CardProduct = ({ product, onAddToCart }: CardProductProps) => {
     <Card key={product.id} className="w-full max-w-xs rounded-xl border width">
       <div className="flex flex-col h-full gap-4 p-4">
         <div className="aspect-[4/5] w-full overflow-hidden rounded-xl">
-          <img
-            src={product?.images?.[0] ?? "https://dummyimage.com/336x336"}
-            alt={product?.title ?? "Product image"}
-            width="336"
-            height="336"
-            className="aspect-[4/5] object-scale-down border w-full"
-          />
+          <Link
+            key={`link-${product.id}`}
+            to={`/product/${product?.id}`}
+            className="font-inter font-normal text-[15px] leading-[20px] tracking-[0%] hover:underline"
+          >
+            <img
+              src={product?.images?.[0] ?? "https://dummyimage.com/336x336"}
+              alt={product?.title ?? "Product image"}
+              width="336"
+              height="336"
+              className="aspect-[4/5] object-scale-down border w-full"
+            />
+          </Link>
         </div>
 
         <div className="flex-grow">

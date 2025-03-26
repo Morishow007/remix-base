@@ -10,10 +10,7 @@ import {
 
 import { GlobalPendingIndicator } from "@/components/global-pending-indicator";
 import { Header } from "@/components/header";
-import {
-  ThemeSwitcherSafeHTML,
-  ThemeSwitcherScript,
-} from "@/components/theme-switcher";
+import { ThemeSwitcherSafeHTML } from "@/components/theme-switcher";
 
 import { CartProvider } from "./context/CartContext";
 import "./globals.css";
@@ -30,7 +27,6 @@ function App({ children }: { children: React.ReactNode }) {
           href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap"
           rel="stylesheet"
         />
-        <ThemeSwitcherScript />
       </head>
       <body className="min-h-screen flex flex-col">
         <GlobalPendingIndicator />
