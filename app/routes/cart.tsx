@@ -47,9 +47,9 @@ export default function Cart() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex flex-col lg:flex-row gap-8">
-        <div className="flex-1">
+    <div className="container mx-auto px-4 py-8 max-w-1440px">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2">
           <h1 className="text-2xl font-bold mb-6">Shopping Cart</h1>
 
           {cart.length === 0 ? (
@@ -65,7 +65,7 @@ export default function Cart() {
             <div className="space-y-6">
               {cart.map((item) => (
                 <div key={item.product.id} className="border-b pb-6">
-                  <div className="flex gap-4">
+                  <div className="flex flex-col md:flex-row gap-4">
                     <div className="bg-gray-100 w-32 h-32 flex-shrink-0">
                       <img
                         src={
@@ -79,12 +79,10 @@ export default function Cart() {
                       />
                     </div>
 
-                    {/* Product Details */}
                     <div className="flex flex-col flex-1 justify-between">
                       <div>
                         <div className="flex justify-between">
                           <h3 className="font-medium">{item.product.title}</h3>
-
                           <div className="text-right">
                             {item.activePromoCode &&
                             item.product.discountPercentage > 0 ? (
@@ -100,7 +98,6 @@ export default function Cart() {
                                   <span className="text-sm text-red-600 line-through">
                                     {item.product.price.toFixed(2)} €
                                   </span>
-
                                   <span className="font-medium">
                                     {(
                                       item.product.price *
@@ -142,7 +139,6 @@ export default function Cart() {
                             </Badge>
                           )}
                         </div>
-
                         {item.product.shippingInformation && (
                           <p className="text-xs text-gray-500 mt-2 flex items-center gap-1">
                             <TruckIcon className="h-3 w-3" />
@@ -158,7 +154,6 @@ export default function Cart() {
                       </div>
 
                       <div className="flex items-center justify-between mt-4">
-                        {/* Quantity Controls */}
                         <div className="flex items-center">
                           <div className="flex items-center border rounded-md">
                             <Button
@@ -193,7 +188,6 @@ export default function Cart() {
                               +
                             </Button>
                           </div>
-
                           {item.product.stock && (
                             <span className="text-xs text-gray-500 ml-2">
                               {item.product.stock} available

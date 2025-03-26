@@ -86,8 +86,13 @@ export function Header() {
                     <button className="p-2 rounded-full hover:bg-gray-100">
                       <UserIcon className="h-6 w-6 text-gray-700" />
                     </button>
-                    <button className="p-2 rounded-full hover:bg-gray-100">
-                      <ShoppingCartIcon className="h-6 w-6 text-gray-700" />
+                    <button
+                      className="p-2 rounded-full hover:bg-gray-100"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      <Link to="/cart">
+                        <ShoppingCartIcon className="h-6 w-6 text-gray-700" />
+                      </Link>
                     </button>
                   </div>
                 </DropdownMenuContent>

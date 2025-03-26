@@ -1,12 +1,14 @@
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
+import { ToastAction } from "@radix-ui/react-toast";
 import type { MetaFunction } from "@remix-run/node";
 import {
   redirect,
   useLoaderData,
+  useNavigate,
   useNavigation,
   useSearchParams,
 } from "@remix-run/react";
-import { LoaderIcon } from "lucide-react";
+import { LoaderIcon, ShoppingCartIcon } from "lucide-react";
 import { ChangeEvent, useState } from "react";
 import { CardProduct } from "../components/card-product";
 import Pagination from "../components/pagination";
@@ -14,6 +16,7 @@ import { Button } from "../components/ui/button";
 import { Checkbox } from "../components/ui/checkbox";
 import { Input } from "../components/ui/input";
 import { useCart } from "../context/CartContext";
+import { useToast } from "../hooks/use-toast";
 import {
   getAllCategories,
   getProducts,
@@ -32,7 +35,7 @@ const sortOptions = [
   { value: "id&order=asc", label: "Default" },
   { value: "price&order=asc", label: "Price Low to High" },
   { value: "price&order=desc", label: "Price High to Low" },
-  { value: "rating&order=asc", label: "Best Rated" },
+  { value: "rating&order=desc", label: "Best Rated" },
 ];
 
 export const loader = async ({ request }: any) => {
@@ -89,6 +92,7 @@ export default function HomePage() {
     useLoaderData<typeof loader>();
 
   const { addToCart } = useCart();
+  const { toast } = useToast();
 
   const [categoryFilter, setCategoryFilter] = useState("");
   const [showAllCategories, setShowAllCategories] = useState(false);
@@ -98,9 +102,8 @@ export default function HomePage() {
   );
 
   const transition = useNavigation();
+  const navigate = useNavigate();
   const isLoading = transition.state === "loading";
-
-  //TODO: TOGGLE CATEGORIES IN MOBILE
 
   const totalPages = Math.ceil(total / 10);
 
@@ -151,7 +154,21 @@ export default function HomePage() {
   };
 
   const handleAddToCart = (currentProduct: Product) => {
-    alert("Added to cart!");
+    toast({
+      title: `${currentProduct.title} added to your cart`,
+      duration: 3000,
+      variant: "default",
+      action: (
+        <ToastAction
+          altText="Try again"
+          onClick={() => {
+            navigate("/cart");
+          }}
+        >
+          <ShoppingCartIcon />
+        </ToastAction>
+      ),
+    });
     addToCart(currentProduct);
   };
 
@@ -221,7 +238,6 @@ export default function HomePage() {
           <div className="border rounded-md p-4">
             <div className="flex justify-between items-center mb-4">
               <h2 className="font-medium">Categories</h2>
-              <Button className="md:hidden text-sm text-primary">Toggle</Button>
             </div>
 
             <div className="mb-4">

@@ -1,7 +1,5 @@
 import { Product, ProductResponse } from "../types/product";
 
-//asc || desc
-
 export async function getProducts(
   limit = 10,
   skip = 0,

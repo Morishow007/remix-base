@@ -1,7 +1,10 @@
 import { Button } from "@/components/ui/button";
-import { useLoaderData } from "@remix-run/react";
+import { ToastAction } from "@radix-ui/react-toast";
+import { useLoaderData, useNavigate } from "@remix-run/react";
+import { ShoppingCartIcon } from "lucide-react";
 import { StarRating } from "../components/star-rating";
 import { useCart } from "../context/CartContext";
+import { toast } from "../hooks/use-toast";
 import { getProductById } from "../models/products.server";
 
 export const loader = async ({ params }: { params: { id: string } }) => {
@@ -12,9 +15,24 @@ export default function ProductDetail() {
   const { product } = useLoaderData<typeof loader>();
   const { addToCart } = useCart();
 
+  const navigate = useNavigate();
   const handleAddToCart = () => {
+    toast({
+      title: `${product.title} added to your cart`,
+      duration: 3000,
+      variant: "default",
+      action: (
+        <ToastAction
+          altText="Try again"
+          onClick={() => {
+            navigate("/cart");
+          }}
+        >
+          <ShoppingCartIcon />
+        </ToastAction>
+      ),
+    });
     addToCart(product);
-    alert("Added to cart!");
   };
 
   return (

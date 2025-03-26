@@ -12,6 +12,7 @@ import { GlobalPendingIndicator } from "@/components/global-pending-indicator";
 import { Header } from "@/components/header";
 import { ThemeSwitcherSafeHTML } from "@/components/theme-switcher";
 
+import { Toaster } from "./components/ui/toaster";
 import { CartProvider } from "./context/CartContext";
 import "./globals.css";
 
@@ -51,6 +52,7 @@ export default function Root() {
   return (
     <CartProvider>
       <App>
+        <Toaster />
         <Outlet />
       </App>
     </CartProvider>
