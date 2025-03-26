@@ -7,7 +7,7 @@ import {
   useSearchParams,
 } from "@remix-run/react";
 import { LoaderIcon } from "lucide-react";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { CardProduct } from "../components/card-product";
 import Pagination from "../components/pagination";
 import { Button } from "../components/ui/button";
@@ -19,7 +19,7 @@ import {
   getProducts,
   getProductsByCategories,
 } from "../models/products.server";
-import { Product } from "../types/product";
+import { Product, ProductResponse } from "../types/product";
 
 export const meta: MetaFunction = () => {
   return [
@@ -29,9 +29,10 @@ export const meta: MetaFunction = () => {
 };
 
 const sortOptions = [
+  { value: "id&order=asc", label: "Default" },
   { value: "price&order=asc", label: "Price Low to High" },
   { value: "price&order=desc", label: "Price High to Low" },
-  { value: "rating", label: "Best Rated" },
+  { value: "rating&order=asc", label: "Best Rated" },
 ];
 
 export const loader = async ({ request }: any) => {
@@ -41,7 +42,12 @@ export const loader = async ({ request }: any) => {
   const skip = (page - 1) * limit;
   const sortBy = url.searchParams.get("sortBy") || "id";
 
-  const productData = await getProducts(limit, skip, sortBy);
+  let productData: ProductResponse = {
+    limit: 0,
+    skip: 0,
+    total: 0,
+    products: [],
+  };
   const categories = await getAllCategories();
 
   const selectedCategories = url.searchParams.getAll("category");
@@ -49,6 +55,16 @@ export const loader = async ({ request }: any) => {
 
   if (selectedCategories.length > 0) {
     productsByCategory = await getProductsByCategories(selectedCategories);
+
+    if (sortBy === "price&order=asc") {
+      productsByCategory.sort((a, b) => a.price - b.price);
+    } else if (sortBy === "price&order=desc") {
+      productsByCategory.sort((a, b) => b.price - a.price);
+    } else if (sortBy === "rating&order=asc") {
+      productsByCategory.sort((a, b) => b.rating - a.rating);
+    }
+  } else {
+    productData = await getProducts(limit, skip, sortBy);
   }
 
   const total = productsByCategory.length || productData.total;
@@ -145,6 +161,13 @@ export default function HomePage() {
     setSearchParams(newSearchParams);
   };
 
+  const handleFilterChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    const newSearchParams = new URLSearchParams(searchParams);
+    newSearchParams.set("sortBy", e.target.value);
+    newSearchParams.set("page", "1");
+    setSearchParams(newSearchParams);
+  };
+
   return (
     <main className="flex-1 container mx-auto px-4 py-6">
       <div className="flex flex-col md:flex-row">
@@ -153,7 +176,7 @@ export default function HomePage() {
             <div className="relative">
               <select
                 className="appearance-none border rounded-md py-2 pl-3 pr-10 bg-white cursor-pointer"
-                onChange={(e) => setSearchParams({ sortBy: e.target.value })}
+                onChange={(e) => handleFilterChange(e)}
               >
                 {sortOptions.map((option) => (
                   <option key={option.value} value={option.value}>
