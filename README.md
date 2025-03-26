@@ -26,6 +26,8 @@ The getAll products API requires a different approach due to its structure and p
 
 Handling both required managing two distinct situations rather than applying a single filtering approach, which would have been an incorrect yet simpler solution.
 
+In case of the getAll could have used a selector to do request only the necessary fields instead of everything, but the Category API doesnt have that implementation. That lead me to the decision to make another call when visiting the single product page to make a call by ID to retrieve all information form the product, simulating a real application. In that case would fetch only necessary data to avoid performance issues in long lists.
+
 ## Filtering Approach
 
 A naïve approach would have been to manipulate the entire product list by applying filters on the frontend. However, the implemented solution ensures better performance and scalability by addressing filtering at the appropriate level within the API design.
