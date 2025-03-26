@@ -8,7 +8,7 @@ import {
 import { useHydrated } from "remix-utils/use-hydrated";
 import { Product } from "../types/product";
 
-interface CartProduct {
+export interface CartProduct {
   product: Product;
   quantity: number;
   activePromoCode: boolean;
