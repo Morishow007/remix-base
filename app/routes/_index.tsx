@@ -63,7 +63,7 @@ export const loader = async ({ request }: any) => {
       productsByCategory.sort((a, b) => a.price - b.price);
     } else if (sortBy === "price&order=desc") {
       productsByCategory.sort((a, b) => b.price - a.price);
-    } else if (sortBy === "rating&order=asc") {
+    } else if (sortBy === "rating&order=desc") {
       productsByCategory.sort((a, b) => b.rating - a.rating);
     }
   } else {

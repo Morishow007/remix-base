@@ -7,6 +7,7 @@ import { Link } from "@remix-run/react";
 import { PercentIcon, ShieldCheck, Tag, Trash2, TruckIcon } from "lucide-react";
 import { useState } from "react";
 import { useCart } from "../context/CartContext";
+import { useToast } from "../hooks/use-toast";
 
 export const loader = async () => {
   return null;
@@ -15,6 +16,7 @@ export const loader = async () => {
 export default function Cart() {
   const { cart, updateQuantity, removeFromCart, activatePromoCode, checkCart } =
     useCart();
+  const { toast } = useToast();
 
   const [promoCode, setPromoCode] = useState("");
 
@@ -37,12 +39,28 @@ export default function Cart() {
   const total = subtotal - discounts + shipping;
 
   const handleApplyPromoCode = (sku: string) => {
-    const productId = cart.find((item) => item.product.sku === sku)?.product.id;
-    if (productId) {
-      activatePromoCode(productId);
-      alert("Promo code applied!");
+    const product = cart.find((item) => item.product.sku === sku);
+    if (product) {
+      if (product.activePromoCode) {
+        toast({
+          title: "Promo code already applied!",
+          duration: 3000,
+          variant: "default",
+        });
+      } else {
+        activatePromoCode(product.product.id);
+        toast({
+          title: "Promo code applied!",
+          duration: 3000,
+          variant: "default",
+        });
+      }
     } else {
-      alert("Invalid promo code!");
+      toast({
+        title: "Invalid promo code!",
+        duration: 3000,
+        variant: "default",
+      });
     }
   };
 

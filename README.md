@@ -20,15 +20,11 @@ Instead of creating a single Product Card component with an extended version, th
 
 The API endpoints for fetching categories and retrieving all products are fundamentally different:
 
-The category API does not include pagination, as pagination is handled on the frontend.
+The category API does not include pagination, as pagination is handled on the frontend. Also no more than one category is allowed, having to make multiple requests and then merging the results together and after that checking for sorting and applying in the FE.
 
 The getAll products API requires a different approach due to its structure and pagination logic.
 
 Handling both required managing two distinct situations rather than applying a single filtering approach, which would have been an incorrect yet simpler solution.
-
-## Caching Strategy
-
-Caching was implemented to optimize performance and reduce redundant API calls. By storing frequently accessed data, the system minimizes unnecessary requests, leading to faster response times and a better user experience.
 
 ## Filtering Approach
 
