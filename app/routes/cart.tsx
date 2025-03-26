@@ -23,14 +23,17 @@ export default function Cart() {
   }, 0);
 
   const discounts = cart.reduce((acc, item) => {
-    const discountAmount = item.product.discountPercentage
-      ? ((item.product.price * item.product.discountPercentage) / 100) *
-        item.quantity
-      : 0;
-    return acc + discountAmount;
+    if (item.activePromoCode) {
+      const discountAmount = item.product.discountPercentage
+        ? ((item.product.price * item.product.discountPercentage) / 100) *
+          item.quantity
+        : 0;
+      return acc + discountAmount;
+    }
+    return acc;
   }, 0);
 
-  const shipping = 20.0;
+  const shipping = 10;
   const total = subtotal - discounts + shipping;
 
   const handleApplyPromoCode = (sku: string) => {
@@ -81,30 +84,40 @@ export default function Cart() {
                       <div>
                         <div className="flex justify-between">
                           <h3 className="font-medium">{item.product.title}</h3>
+
                           <div className="text-right">
-                            {item.product.discountPercentage > 0 && (
-                              <div className="flex justify-end items-center gap-1 text-green-600 text-sm">
-                                <PercentIcon className="h-3 w-3" />
-                                <span>
-                                  {item.product.discountPercentage.toFixed(0)}%
-                                  off
+                            {item.activePromoCode &&
+                            item.product.discountPercentage > 0 ? (
+                              <>
+                                <div className="flex justify-end items-center gap-1 text-green-600 text-sm">
+                                  <PercentIcon className="h-3 w-3" />
+                                  <span>
+                                    {item.product.discountPercentage.toFixed(0)}
+                                    % off
+                                  </span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <span className="text-sm text-red-600 line-through">
+                                    {item.product.price.toFixed(2)} €
+                                  </span>
+
+                                  <span className="font-medium">
+                                    {(
+                                      item.product.price *
+                                      (1 -
+                                        item.product.discountPercentage / 100)
+                                    ).toFixed(2)}{" "}
+                                    €
+                                  </span>
+                                </div>
+                              </>
+                            ) : (
+                              <div className="flex items-center gap-2">
+                                <span className="font-medium">
+                                  {item.product.price.toFixed(2)} €
                                 </span>
                               </div>
                             )}
-                            <div className="flex items-center gap-2">
-                              {item.product.discountPercentage > 0 && (
-                                <span className="text-sm text-red-600 line-through">
-                                  {item.product.price.toFixed(2)} €
-                                </span>
-                              )}
-                              <span className="font-medium">
-                                {(
-                                  item.product.price *
-                                  (1 - item.product.discountPercentage / 100)
-                                ).toFixed(2)}{" "}
-                                €
-                              </span>
-                            </div>
                           </div>
                         </div>
 

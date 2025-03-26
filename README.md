@@ -29,3 +29,7 @@ Caching was implemented to optimize performance and reduce redundant API calls. 
 ## Filtering Approach
 
 A naïve approach would have been to manipulate the entire product list by applying filters on the frontend. However, the implemented solution ensures better performance and scalability by addressing filtering at the appropriate level within the API design.
+
+## Promo Code Feature
+
+A promo code functionality has been added to the cart page. User can check the current promo codes by clicking on the Checkout button, which will log the entire cart content to the console. This allows for verification of all items in the cart including their sku (promocodes).

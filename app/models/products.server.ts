@@ -5,8 +5,8 @@ import { Product, ProductResponse } from "../types/product";
 export async function getProducts(
   limit = 10,
   skip = 0,
-  sortBy = "rating",
-  order = "desc"
+  sortBy = "",
+  order = ""
 ): Promise<ProductResponse> {
   const data = await fetch(
     `https://dummyjson.com/products?limit=${limit}&skip=${skip}&sortBy=${sortBy}&order=${order}`,

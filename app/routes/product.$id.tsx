@@ -12,12 +12,15 @@ export default function ProductDetail() {
   const { product } = useLoaderData<typeof loader>();
   const { addToCart } = useCart();
 
+  const handleAddToCart = () => {
+    addToCart(product);
+    alert("Added to cart!");
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Main Content */}
       <main className="flex-1 container mx-auto px-4 py-8">
         <div className="grid md:grid-cols-2 gap-8">
-          {/* Product Image */}
           <div className="bg-gray-100 aspect-square w-full">
             <img
               src={product?.images?.[0] ?? "https://dummyimage.com/336x336"}
@@ -27,8 +30,6 @@ export default function ProductDetail() {
               className="object-scale-down w-full h-full border-rounded"
             />
           </div>
-
-          {/* Product Details */}
           <div className="flex flex-col">
             <div className="flex flex-row gap-2 justify-start">
               <h1 className="text-2xl font-medium ">{product?.title}</h1>
@@ -43,7 +44,10 @@ export default function ProductDetail() {
             </div>
             <p className="text-2xl font-bold mb-6">{product?.price} €</p>
 
-            <Button className="w-full bg-slate-800 hover:bg-slate-700 text-white mb-8">
+            <Button
+              className="w-full bg-slate-800 hover:bg-slate-700 text-white mb-8"
+              onClick={handleAddToCart}
+            >
               Add to Cart
             </Button>
 

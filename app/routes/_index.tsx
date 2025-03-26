@@ -29,10 +29,10 @@ export const meta: MetaFunction = () => {
 };
 
 const sortOptions = [
-  { value: "asc", label: "Price Low to High" },
-  { value: "desc", label: "Price High to Low" },
-  { value: "rating", label: "Rating" },
-  { value: "title", label: "Title" },
+  { value: "price", label: "Price Low to High" },
+  { value: "id", label: "Price High to Low" },
+  { value: "rating", label: "Best Rated" },
+  { value: "title", label: "Name" },
 ];
 
 export const loader = async ({ request }: any) => {
@@ -40,8 +40,10 @@ export const loader = async ({ request }: any) => {
   const page = Number(url.searchParams.get("page")) || 1;
   const limit = 10;
   const skip = (page - 1) * limit;
+  const sortBy = url.searchParams.get("sortBy") || "id";
+  const order = url.searchParams.get("order") || "asc";
 
-  const productData = await getProducts(limit, skip);
+  const productData = await getProducts(limit, skip, sortBy, order);
   const categories = await getAllCategories();
 
   const selectedCategories = url.searchParams.getAll("category");
@@ -85,8 +87,6 @@ export default function HomePage() {
   const isLoading = transition.state === "loading";
 
   //TODO: TOGGLE CATEGORIES IN MOBILE
-  //TODO: Implement  error states
-  const [error, setError] = useState<string | null>(null);
 
   const totalPages = Math.ceil(total / 10);
 
@@ -153,12 +153,15 @@ export default function HomePage() {
         <div className="flex-1">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
             <div className="relative">
-              <select className="appearance-none border rounded-md py-2 pl-3 pr-10 bg-white cursor-pointer">
-                <option>Sort by</option>
-                <option>Price: Low to High</option>
-                <option>Price: High to Low</option>
-                <option>Newest</option>
-                <option>Popular</option>
+              <select
+                className="appearance-none border rounded-md py-2 pl-3 pr-10 bg-white cursor-pointer"
+                onChange={(e) => setSearchParams({ sortBy: e.target.value })}
+              >
+                {sortOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
               </select>
               <ChevronDownIcon className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 pointer-events-none" />
             </div>
